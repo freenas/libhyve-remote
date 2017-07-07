@@ -38,7 +38,9 @@
 #include "libcheck.h"
 #include "rfbsrv.h"
 
-int
+static int load_functions(void);
+
+static int
 load_functions(void) {
     char *loader = NULL;
     void *shlib;

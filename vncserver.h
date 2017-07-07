@@ -30,6 +30,5 @@
 
 #include "rfbsrv.h"
 
-extern int load_functions(void);
 extern int init_server(struct server_handle *sc); 
 extern int event_loop(void (*f)(rfbScreenInfoPtr screen, ...)); 
