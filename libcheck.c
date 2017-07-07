@@ -58,8 +58,6 @@ int
 check_sharedlibs(char *lib_name) {
     char *loader;
     void *shlib;
-    int libvncserver = 0;
-    int libfreerdp = 0;
 
     loader = NULL;
 
