@@ -28,9 +28,34 @@
  *
  */
 
-#include "rfbsrv.h"
-#include "hyverem.h"
+#include <pthread.h>
+#include <pthread_np.h>
+#include <stdbool.h>
 
-extern int init_server(struct server_softc *sc);
-extern int rect_modified(struct server_softc *sc);
-extern int event_loop(void (*f)(rfbScreenInfoPtr screen, ...)); 
+#ifndef SOFTC_H
+#define SOFTC_H
+struct server_softc {
+    pthread_t       vs_tid;
+    int             vs_width;
+    int             vs_height;
+    int             vs_conn_wait;
+    int             vs_sending;
+    pthread_mutex_t vs_mtx;
+    pthread_cond_t  vs_cond;
+    int             vs_hw_crc;
+    uint32_t        *vs_crc;
+    uint32_t        *vs_crc_tmp;
+    int             vs_crc_width;
+    int             vs_crc_height;
+    char            *desktopName;
+    bool            alwaysShared;
+    int             redShift;
+    int             greenShift;
+    int             blueShift;
+    char            *frameBuffer;
+    int             bitsPerSample;
+    int             samplesPerPixel;
+    int             bytesPerPixel;
+    int             bind_port;
+};
+#endif

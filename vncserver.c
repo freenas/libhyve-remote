@@ -37,8 +37,19 @@
 #include "vncserver.h"
 #include "libcheck.h"
 #include "rfbsrv.h"
+#include "hyverem.h"
 
 static int load_functions(void);
+
+// Shared functions from libvncserver
+rfbScreenInfoPtr (*get_screen)(int *argc, char **argv,
+    int width, int height, int bitsPerSample, int samplesPerPixel,
+    int bytesPerPixel);
+void (*start_vnc_server)(rfbScreenInfoPtr rfbScreen);
+void (*run_event_loop)(rfbScreenInfoPtr screeninfo, long usec,
+    rfbBool runInBackground);
+void (*mark_rect_asmodified)(rfbScreenInfoPtr rfbScreen, int x1, int y1,
+    int x2, int y2);
 
 static int
 load_functions(void) {
@@ -46,13 +57,6 @@ load_functions(void) {
     void *shlib;
 
     if (check_sharedlibs(LIBVNCSERVER) == 0) {
-        rfbScreenInfoPtr (*get_screen)(int *argc, char **argv,
-            int width, int height, int bitsPerSample, int samplesPerPixel,
-            int bytesPerPixel);
-        void (*start_vnc_server)(rfbScreenInfoPtr rfbScreen);
-        void (*run_event_loop)(rfbScreenInfoPtr screeninfo, long usec,
-            rfbBool runInBackground); 
-
         loader = strdup(LIBVNCSERVER);
         if (loader == NULL)
             err(1, "malloc");
@@ -67,6 +71,7 @@ load_functions(void) {
         get_screen = dlsym(shlib, "rfbGetScreen");
         start_vnc_server = dlsym(shlib, "rfbInitServerWithoutPthreadsAndZRLE");
         run_event_loop = dlsym(shlib, "rfbRunEventLoop");
+        mark_rect_asmodified = dlsym(shlib, "rfbMarkRectAsModified");
 
         return (0);
     } else
@@ -74,9 +79,26 @@ load_functions(void) {
 }
 
 int
-init_server(struct server_handle *sc) {
-    if (load_functions() == 0)
-        sc->vs_screen = (struct _rfbScreenInfo *)malloc(sizeof(rfbScreenInfoPtr));
+init_server(struct server_softc *sc) {
+    if (load_functions() == 0) {
+        struct server_handle *srv = malloc(sizeof(struct server_handle));
+        srv->vs_screen = (struct _rfbScreenInfo *)malloc(sizeof(rfbScreenInfoPtr));
+        srv->vs_screen = (*get_screen)(NULL, NULL, 800, 600, 8, 3, 4);
+
+        start_vnc_server(srv->vs_screen);
+    }
+
+    return (0);
+}
+
+int
+rect_modified(struct server_softc *sc) {
+    if (load_functions() == 0) {
+        struct server_handle *srv = malloc(sizeof(struct server_handle));
+        srv->vs_screen = (struct _rfbScreenInfo *)malloc(sizeof(rfbScreenInfoPtr));
+        mark_rect_asmodified(srv->vs_screen, 0, 0, sc->vs_width,
+            sc->vs_height);
+    }
 
     return (0);
 }
