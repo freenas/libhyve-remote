@@ -5,3 +5,5 @@ add_executable(test_it test.c)
 
 set(libsrc libcheck.c vncserver.c)
 add_library(hyverem SHARED ${libsrc})
+
+install(TARGETS hyverem DESTINATION /usr/local/lib/)
