@@ -44,7 +44,7 @@ main(void) {
 
     printf("VNC: %d, RDP: %d\n", vnc, rdp);
 
-    struct server_handle *srv = malloc(sizeof(struct server_handle));
+    struct vncserver_handler *srv = malloc(sizeof(struct vncserver_handler));
     srv->vs_width = 800;
     srv->vs_screen = (struct _rfbScreenInfo *)malloc(sizeof(rfbScreenInfoPtr));
     srv->vs_screen->ipv6port = 5900;

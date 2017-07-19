@@ -4,8 +4,13 @@
 #include <err.h>
 #include <errno.h>
 #include <string.h>
+#include "rfbsrv.h"
+#include "hyverem.h"
+
+#include "vncserver.h"
 
 #define LIBHYVEREM  "/usr/local/lib/libhyverem.so"
+
 int main(void);
 
 int
@@ -14,29 +19,15 @@ main(void) {
     char *loader;
     void *shlib;
 
-    int (*check_sharedlibs)(char *lib_name);
-    int (*load_functions_a)(void);
+    struct server_softc *sc = malloc(sizeof(struct server_softc));
+    sc->bind_port = 5900;
+    sc->desktopName = "bhyve";
+    sc->alwaysShared = true;
+    sc->vs_width = 800;
+    sc->vs_height = 600;
+    sc->frameBuffer = (char *)malloc(sc->vs_width*sc->vs_height*4);
 
-    loader = NULL;
-    loader = strdup(LIBHYVEREM);
-    shlib = dlopen(loader, RTLD_NOW);
-
-    if (!shlib) {
-        printf("Lib not loaded.\n");
-        dlclose(shlib);
-        free(loader);
-        return (1);
-    }
-
-    check_sharedlibs = dlsym(shlib, "check_sharedlibs");
-    load_functions_a = dlsym(shlib, "load_functions");
-
-    int l = load_functions_a();
-    printf("Load functions: %d\n", l);
-
-    int check;
-    check = check_sharedlibs("/usr/local/lib/libvncserver.so");
-    printf("VNC: %d\n", check);
+    vnc_init_server(sc);
 
     return (0);
 }
