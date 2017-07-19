@@ -54,7 +54,7 @@ static enum rfbNewClientAction vncserver_newclient(rfbClientPtr cl);
 static void dokey_fallback(rfbBool down, rfbKeySym key);
 static void doptr_fallback(int button, int x, int y);
 
-// Shared functions from libvncserver
+/* Shared functions from libvncserver. */
 rfbScreenInfoPtr (*get_screen)(int *argc, char **argv,
     int width, int height, int bitsPerSample, int samplesPerPixel,
     int bytesPerPixel);
@@ -64,6 +64,9 @@ void (*run_event_loop)(rfbScreenInfoPtr screeninfo, long usec,
 void (*mark_rect_asmodified)(rfbScreenInfoPtr rfbScreen, int x1, int y1,
     int x2, int y2);
 
+/*
+ * Just output the IP of the client connect in this server and return accept.
+ */
 static enum rfbNewClientAction
 vncserver_newclient(rfbClientPtr cl) {
     struct sockaddr_in addr;
@@ -78,12 +81,18 @@ vncserver_newclient(rfbClientPtr cl) {
     return (RFB_CLIENT_ACCEPT);
 }
 
+/*
+ * Dummy fallback keyboard interface in case the consumer doesn't provide it.
+ */
 static void
 dokey_fallback(rfbBool down, rfbKeySym key) {
     WPRINTF(("[hyverem]: %s: %s (0x%x)",
               down ? "down" : "up", keys[key&0x3ff] ? keys[key&0x3ff] : "", (unsigned int)key));
 }
 
+/*
+ * Dummy fallback for mouse interface in case the consumer doesn't provide it.
+ */
 static void
 doptr_fallback(int button, int x, int y) {
     if (button) {
@@ -92,6 +101,10 @@ doptr_fallback(int button, int x, int y) {
     }
 }
 
+/*
+ * Load from LIBVNCSERVER shared library the functions that are necessary
+ * to provide a minimum functionality for this library.
+ */
 static int
 load_functions(void) {
     char *loader = NULL;
@@ -130,6 +143,9 @@ free_lib:
     return (1);
 }
 
+/*
+ * Start the VNC SERVER with data received from server_softc structure.
+ */
 int
 vnc_init_server(struct server_softc *sc) {
     if (load_functions() == 0) {
@@ -172,6 +188,9 @@ vnc_init_server(struct server_softc *sc) {
     return (1);
 }
 
+/*
+ * Update the client screen with new information.
+ */
 int
 vnc_mark_rect_modified(struct server_softc *sc, int x1, int y1, int x2, int y2) {
 
