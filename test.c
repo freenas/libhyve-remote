@@ -16,8 +16,6 @@ int main(void);
 int
 main(void) {
     // DLOPEN
-    char *loader;
-    void *shlib;
 
     struct server_softc *sc = malloc(sizeof(struct server_softc));
     sc->bind_port = 5900;
