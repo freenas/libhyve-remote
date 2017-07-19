@@ -151,13 +151,13 @@ vnc_init_server(struct server_softc *sc) {
     if (load_functions() == 0) {
         srv = malloc(sizeof(struct vncserver_handler));
         srv->vs_screen = (struct _rfbScreenInfo *)malloc(sizeof(rfbScreenInfoPtr));
-        srv->vs_screen = (*get_screen)(NULL, NULL, sc->vs_width, sc->vs_height, 8, 3, 4);
         if (!srv->vs_screen) {
             WPRINTF(("Error to allocate vs_screen\n"));
             free(srv);
             return (1);
         }
 
+        srv->vs_screen = (*get_screen)(NULL, NULL, sc->vs_width, sc->vs_height, 8, 3, 4);
         srv->vs_screen->desktopName = sc->desktopName;
         srv->vs_screen->alwaysShared = sc->alwaysShared;
         srv->vs_screen->serverFormat.redShift = sc->redShift;
