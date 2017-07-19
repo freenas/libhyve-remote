@@ -42,11 +42,11 @@
 #include "rfbsrv.h"
 #include "hyverem.h"
 
-static int hyverem_debug = 1;
-static char *keys[0x400];
 #define DPRINTF(params) if (hyverem_debug) printf params
 #define WPRINTF(params) printf params
 
+static int hyverem_debug = 1;
+static char *keys[0x400];
 struct vncserver_handler *srv;
 
 static int load_functions(void);
@@ -162,10 +162,7 @@ vnc_init_server(struct server_softc *sc) {
             srv->vs_screen->ptrAddEvent = (void *)doptr_fallback;
         }
 
-        DPRINTF(("width: %d\t height: %d\n", sc->vs_width, sc->vs_height));
-        DPRINTF(("Bind port: %d\n", sc->bind_port));
-        DPRINTF(("Always share: %d\n", sc->alwaysShared));
-        DPRINTF(("Desktop name: %s\n", sc->desktopName));
+        DPRINTF(("Bind port: %d\n for guest: %s\n", sc->bind_port, sc->desktopName));
 
         start_vnc_server(srv->vs_screen);
         run_event_loop(srv->vs_screen, 40000, TRUE);
