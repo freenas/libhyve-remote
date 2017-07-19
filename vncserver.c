@@ -170,8 +170,8 @@ vnc_init_server(struct server_softc *sc) {
         srv->vs_screen->ipv6port = sc->bind_port;
         srv->vs_screen->newClientHook = vncserver_newclient;
 
-        if (sc->kdb_handler && sc->ptr_handler) {
-            srv->vs_screen->kbdAddEvent = (void *)sc->kdb_handler;
+        if (sc->kbd_handler && sc->ptr_handler) {
+            srv->vs_screen->kbdAddEvent = (void *)sc->kbd_handler;
             srv->vs_screen->ptrAddEvent = (void *)sc->ptr_handler;
         } else {
             WPRINTF(("[hyverem]: Keyboard and mouse functions not provided.\n"));

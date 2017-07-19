@@ -59,7 +59,7 @@ struct server_softc {
     int             samplesPerPixel;
     int             bytesPerPixel;
     int             bind_port;
-    void            (*kdb_handler)(int down, uint32_t keysym);
+    void            (*kbd_handler)(int down, uint32_t keysym);
     void            (*ptr_handler)(uint8_t button, int x, int y);
 };
 #endif
