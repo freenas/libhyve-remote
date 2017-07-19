@@ -51,8 +51,8 @@ struct vncserver_handler *srv;
 
 static int load_functions(void);
 static enum rfbNewClientAction vncserver_newclient(rfbClientPtr cl);
-static void dokey_fallback(rfbBool down, rfbKeySym key, rfbClientPtr cl);
-static void doptr_fallback(int button, int x, int y, rfbClientPtr cl);
+static void dokey_fallback(rfbBool down, rfbKeySym key);
+static void doptr_fallback(int button, int x, int y);
 
 // Shared functions from libvncserver
 rfbScreenInfoPtr (*get_screen)(int *argc, char **argv,
@@ -66,7 +66,6 @@ void (*mark_rect_asmodified)(rfbScreenInfoPtr rfbScreen, int x1, int y1,
 
 static enum rfbNewClientAction
 vncserver_newclient(rfbClientPtr cl) {
-    char buffer[1024];
     struct sockaddr_in addr;
     socklen_t len=sizeof(addr);
     unsigned int ipv4;
@@ -80,14 +79,13 @@ vncserver_newclient(rfbClientPtr cl) {
 }
 
 static void
-dokey_fallback(rfbBool down, rfbKeySym key, rfbClientPtr cl) {
-    char buffer[1024 + 32];
+dokey_fallback(rfbBool down, rfbKeySym key) {
     WPRINTF(("[hyverem]: %s: %s (0x%x)",
               down ? "down" : "up", keys[key&0x3ff] ? keys[key&0x3ff] : "", (unsigned int)key));
 }
 
 static void
-doptr_fallback(int button, int x, int y, rfbClientPtr cl) {
+doptr_fallback(int button, int x, int y) {
     if (button) {
         WPRINTF(("[hyverem]: mouse button mask 0x%x at %d, %d", button,
                   x, y));
@@ -160,8 +158,8 @@ vnc_init_server(struct server_softc *sc) {
             srv->vs_screen->ptrAddEvent = (void *)sc->ptr_handler;
         } else {
             WPRINTF(("[hyverem]: Keyboard and mouse functions not provided.\n"));
-            srv->vs_screen->kbdAddEvent = dokey_fallback;
-            srv->vs_screen->ptrAddEvent = doptr_fallback;
+            srv->vs_screen->kbdAddEvent = (void *)dokey_fallback;
+            srv->vs_screen->ptrAddEvent = (void *)doptr_fallback;
         }
 
         DPRINTF(("width: %d\t height: %d\n", sc->vs_width, sc->vs_height));
