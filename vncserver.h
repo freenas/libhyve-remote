@@ -32,5 +32,5 @@
 #include "hyverem.h"
 
 extern int init_server(struct server_softc *sc);
-extern int mark_rect_modified(struct server_softc *sc);
+extern int mark_rect_modified(struct server_softc *sc, int x1, int y1, int x2, int y2);
 extern int event_loop(void (*f)(rfbScreenInfoPtr screen, ...)); 

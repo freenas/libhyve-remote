@@ -43,15 +43,16 @@
 #include "hyverem.h"
 
 static int hyverem_debug = 1;
+static char *keys[0x400];
 #define DPRINTF(params) if (hyverem_debug) printf params
 #define WPRINTF(params) printf params
 
-static char *keys[0x400];
+struct vncserver_handler *srv;
 
 static int load_functions(void);
 static enum rfbNewClientAction vncserver_newclient(rfbClientPtr cl);
-static void dokey(rfbBool down, rfbKeySym k, rfbClientPtr cl);
-static void doptr(int buttonMask, int x, int y, rfbClientPtr cl);
+static void dokey_fallback(rfbBool down, rfbKeySym key, rfbClientPtr cl);
+static void doptr_fallback(int button, int x, int y, rfbClientPtr cl);
 
 // Shared functions from libvncserver
 rfbScreenInfoPtr (*get_screen)(int *argc, char **argv,
@@ -72,28 +73,26 @@ vncserver_newclient(rfbClientPtr cl) {
 
     getpeername(cl->sock, (struct sockaddr *)&addr, &len);
     ipv4 = ntohl(addr.sin_addr.s_addr);
-    printf("Client connected from ip %d.%d.%d.%d",
-            (ipv4>>24)&0xff, (ipv4>>16)&0xff, (ipv4>>8)&0xff, ipv4&0xff);
+    DPRINTF(("Client connected from ip %d.%d.%d.%d\n",
+            (ipv4>>24)&0xff, (ipv4>>16)&0xff, (ipv4>>8)&0xff, ipv4&0xff));
 
-    return RFB_CLIENT_ACCEPT;
+    return (RFB_CLIENT_ACCEPT);
 }
 
 static void
-dokey(rfbBool down, rfbKeySym k, rfbClientPtr cl) {
+dokey_fallback(rfbBool down, rfbKeySym key, rfbClientPtr cl) {
     char buffer[1024 + 32];
-    printf("%s: %s (0x%x)",
-            down?"down":"up", keys[k&0x3ff]?keys[k&0x3ff]:"", (unsigned int)k);
+    WPRINTF(("[hyverem]: %s: %s (0x%x)",
+              down ? "down" : "up", keys[key&0x3ff] ? keys[key&0x3ff] : "", (unsigned int)key));
 }
 
 static void
-doptr(int buttonMask, int x, int y, rfbClientPtr cl) {
-    char buffer[1024];
-    if (buttonMask) {
-        printf("Ptr: mouse button mask 0x%x at %d,%d", buttonMask,
-                x, y);
+doptr_fallback(int button, int x, int y, rfbClientPtr cl) {
+    if (button) {
+        WPRINTF(("[hyverem]: mouse button mask 0x%x at %d, %d", button,
+                  x, y));
     }
 }
-
 
 static int
 load_functions(void) {
@@ -116,13 +115,13 @@ load_functions(void) {
         mark_rect_asmodified = dlsym(shlib, "rfbMarkRectAsModified");
 
         if(!start_vnc_server) {
-            WPRINTF(("Failed to load rfbInitServerWithPthreadsAndZRLE\n"));
+            WPRINTF(("[hyverem]: Failed to load rfbInitServerWithPthreadsAndZRLE\n"));
             goto free_lib;
         } else if (!run_event_loop) {
-            WPRINTF(("Failed to load rfbRunEventLoop\n"));
+            WPRINTF(("[hyverem]: Failed to load rfbRunEventLoop\n"));
             goto free_lib;
         } else if (!mark_rect_asmodified) {
-            WPRINTF(("Failed to load rfbMarkRectAsModified\n"));
+            WPRINTF(("[hyverem]: Failed to load rfbMarkRectAsModified\n"));
             goto free_lib;
         }
         return (0);
@@ -136,7 +135,7 @@ free_lib:
 int
 init_server(struct server_softc *sc) {
     if (load_functions() == 0) {
-        struct vncserver_handler *srv = malloc(sizeof(struct vncserver_handler));
+        srv = malloc(sizeof(struct vncserver_handler));
         srv->vs_screen = (struct _rfbScreenInfo *)malloc(sizeof(rfbScreenInfoPtr));
         srv->vs_screen = (*get_screen)(NULL, NULL, sc->vs_width, sc->vs_height, 8, 3, 4);
         if (!srv->vs_screen) {
@@ -144,7 +143,6 @@ init_server(struct server_softc *sc) {
             free(srv);
             return (1);
         }
-
 
         srv->vs_screen->desktopName = sc->desktopName;
         srv->vs_screen->alwaysShared = sc->alwaysShared;
@@ -155,10 +153,16 @@ init_server(struct server_softc *sc) {
         srv->vs_screen->screenData = sc;
         srv->vs_screen->port = sc->bind_port;
         srv->vs_screen->ipv6port = sc->bind_port;
-
-        srv->vs_screen->ptrAddEvent = doptr;
-        srv->vs_screen->kbdAddEvent = dokey;
         srv->vs_screen->newClientHook = vncserver_newclient;
+
+        if (sc->kdb_handler && sc->ptr_handler) {
+            srv->vs_screen->kbdAddEvent = (void *)sc->kdb_handler;
+            srv->vs_screen->ptrAddEvent = (void *)sc->ptr_handler;
+        } else {
+            WPRINTF(("[hyverem]: Keyboard and mouse functions not provided.\n"));
+            srv->vs_screen->kbdAddEvent = dokey_fallback;
+            srv->vs_screen->ptrAddEvent = doptr_fallback;
+        }
 
         DPRINTF(("width: %d\t height: %d\n", sc->vs_width, sc->vs_height));
         DPRINTF(("Bind port: %d\n", sc->bind_port));
@@ -166,7 +170,7 @@ init_server(struct server_softc *sc) {
         DPRINTF(("Desktop name: %s\n", sc->desktopName));
 
         start_vnc_server(srv->vs_screen);
-        run_event_loop(srv->vs_screen, -1, FALSE);
+        run_event_loop(srv->vs_screen, 40000, TRUE);
 
         return (0);
     }
@@ -174,13 +178,10 @@ init_server(struct server_softc *sc) {
 }
 
 int
-mark_rect_modified(struct server_softc *sc) {
-    if (load_functions() == 0) {
-        struct vncserver_handler *srv = malloc(sizeof(struct vncserver_handler));
-        srv->vs_screen = (struct _rfbScreenInfo *)malloc(sizeof(rfbScreenInfoPtr));
-        mark_rect_asmodified(srv->vs_screen, 0, 0, sc->vs_width,
-            sc->vs_height);
-    }
+mark_rect_modified(struct server_softc *sc, int x1, int y1, int x2, int y2) {
+
+    mark_rect_asmodified(srv->vs_screen, 0, 0, sc->vs_width, sc->vs_height);
+    DPRINTF(("x1: %d\t y1: %d\t x2: %d\t y2: %d\n", x1, y1, x2, y2));
 
     return (0);
 }
