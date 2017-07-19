@@ -31,10 +31,12 @@
 #include <pthread.h>
 #include <pthread_np.h>
 #include <stdbool.h>
+#include "rfbsrv.h"
 
 #ifndef SOFTC_H
 #define SOFTC_H
 struct server_softc {
+    struct gc_image *vs_gc;
     pthread_t       vs_tid;
     int             vs_width;
     int             vs_height;
@@ -57,5 +59,7 @@ struct server_softc {
     int             samplesPerPixel;
     int             bytesPerPixel;
     int             bind_port;
+    void            (*kdb_handler)(int down, uint32_t keysym);
+    void            (*ptr_handler)(uint8_t button, int x, int y);
 };
 #endif
