@@ -42,7 +42,7 @@ struct gc_image {
 
 #ifndef HANDLER_H
 #define HANDLER_H
-struct server_handle {
+struct vncserver_handler {
     struct gc_image *vs_gc;
     pthread_t       vs_tid;
     rfbScreenInfoPtr vs_screen;
