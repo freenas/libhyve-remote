@@ -65,7 +65,7 @@ void (*mark_rect_asmodified)(rfbScreenInfoPtr rfbScreen, int x1, int y1,
     int x2, int y2);
 
 /*
- * Just output the IP of the client connect in this server and return accept.
+ * Just output the IP of the client connected in this server and return accept.
  */
 static enum rfbNewClientAction
 vncserver_newclient(rfbClientPtr cl) {
@@ -137,6 +137,7 @@ load_functions(void) {
         }
         return (0);
     }
+    return (1);
 free_lib:
     dlclose(loader);
     free(loader);
