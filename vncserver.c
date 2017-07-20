@@ -144,6 +144,14 @@ free_lib:
     return (1);
 }
 
+void vnc_event_loop(int time, bool bol) {
+        DPRINTF(("vnc_event_loop\n"));
+        if (srv->vs_screen)
+            run_event_loop(srv->vs_screen, time, bol);
+        else
+            WPRINTF(("There is no data to show for the client.\n"));
+}
+
 /*
  * Start the VNC SERVER with data received from server_softc structure.
  */
@@ -182,7 +190,7 @@ vnc_init_server(struct server_softc *sc) {
         DPRINTF(("Bind port: %d\n for guest: %s\n", sc->bind_port, sc->desktopName));
 
         start_vnc_server(srv->vs_screen);
-        run_event_loop(srv->vs_screen, 40000, TRUE);
+        vnc_event_loop(4000, TRUE);
 
         return (0);
     }

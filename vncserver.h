@@ -33,3 +33,4 @@
 
 extern int vnc_init_server(struct server_softc *sc);
 extern int vnc_mark_rect_modified(struct server_softc *sc, int x1, int y1, int x2, int y2);
+extern void vnc_event_loop(int time, bool b);
