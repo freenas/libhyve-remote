@@ -145,7 +145,7 @@ free_lib:
 }
 
 void vnc_event_loop(int time, bool bol) {
-        DPRINTF(("vnc_event_loop\n"));
+        DPRINTF(("start vnc_event_loop\n"));
         if (srv->vs_screen)
             run_event_loop(srv->vs_screen, time, bol);
         else
@@ -187,10 +187,9 @@ vnc_init_server(struct server_softc *sc) {
             srv->vs_screen->ptrAddEvent = (void *)doptr_fallback;
         }
 
-        DPRINTF(("Bind port: %d\n for guest: %s\n", sc->bind_port, sc->desktopName));
+        DPRINTF(("Bind port: %d for guest: %s\n", sc->bind_port, sc->desktopName));
 
         start_vnc_server(srv->vs_screen);
-        vnc_event_loop(4000, TRUE);
 
         return (0);
     }
