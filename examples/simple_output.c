@@ -4,7 +4,6 @@
 #include <err.h>
 #include <errno.h>
 #include <string.h>
-#include <unistd.h>
 #include "rfbsrv.h"
 #include "hyverem.h"
 #include "vncserver.h"
