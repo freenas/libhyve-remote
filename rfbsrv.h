@@ -43,19 +43,10 @@ struct gc_image {
 #ifndef HANDLER_H
 #define HANDLER_H
 struct vncserver_handler {
-    struct gc_image *vs_gc;
-    pthread_t       vs_tid;
     rfbScreenInfoPtr vs_screen;
     int             vs_width;
     int             vs_height;
     int             vs_conn_wait;
     int             vs_sending;
-    pthread_mutex_t vs_mtx;
-    pthread_cond_t  vs_conf;
-    int             vs_hw_crc;
-    uint32_t        vs_crc;
-    uint32_t        vs_crc_tmp;
-    int             vs_crc_width;
-    int             vs_crc_height;
 };
 #endif
