@@ -113,7 +113,7 @@ load_functions(void) {
     if (check_sharedlibs(LIBVNCSERVER) == 0) {
         loader = strdup(LIBVNCSERVER);
         if (loader == NULL)
-            err(EX_SOFTWARE, "not possible to load %s", LIBVNCSERVER);
+            errx(EX_SOFTWARE, "not possible to load %s", LIBVNCSERVER);
 
         shlib = dlopen(loader, RTLD_NOW | RTLD_GLOBAL);
         if (!shlib) {
@@ -149,7 +149,7 @@ void vnc_event_loop(int time, bool bol) {
         if (srv->vs_screen)
             run_event_loop(srv->vs_screen, time, bol);
         else
-            WPRINTF(("There is no data to show for the client.\n"));
+            errx(EX_SOFTWARE, "there is no data to show for the client");
 }
 
 /*
@@ -161,22 +161,26 @@ vnc_init_server(struct server_softc *sc) {
         srv = malloc(sizeof(struct vncserver_handler));
         srv->vs_screen = (struct _rfbScreenInfo *)malloc(sizeof(rfbScreenInfoPtr));
         if (!srv->vs_screen) {
-            WPRINTF(("Error to allocate vs_screen\n"));
             free(srv);
+            errx(EX_OSERR, "error to allocate memory for vs_screen");
             return (1);
         }
 
-        srv->vs_screen = (*get_screen)(NULL, NULL, sc->vs_width, sc->vs_height, 8, 3, 4);
-        srv->vs_screen->desktopName = sc->desktopName;
-        srv->vs_screen->alwaysShared = sc->alwaysShared;
-        srv->vs_screen->serverFormat.redShift = sc->redShift;
-        srv->vs_screen->serverFormat.greenShift = sc->greenShift;
-        srv->vs_screen->serverFormat.blueShift = sc->blueShift;
-        srv->vs_screen->frameBuffer = sc->frameBuffer;
-        srv->vs_screen->screenData = sc;
-        srv->vs_screen->port = sc->bind_port;
-        srv->vs_screen->ipv6port = sc->bind_port;
-        srv->vs_screen->newClientHook = vncserver_newclient;
+        if (sc) {
+            srv->vs_screen = (*get_screen)(NULL, NULL, sc->vs_width,
+                sc->vs_height, 8, 3, 4);
+            srv->vs_screen->desktopName = sc->desktopName;
+            srv->vs_screen->alwaysShared = sc->alwaysShared;
+            srv->vs_screen->serverFormat.redShift = sc->redShift;
+            srv->vs_screen->serverFormat.greenShift = sc->greenShift;
+            srv->vs_screen->serverFormat.blueShift = sc->blueShift;
+            srv->vs_screen->frameBuffer = sc->frameBuffer;
+            srv->vs_screen->screenData = sc;
+            srv->vs_screen->port = sc->bind_port;
+            srv->vs_screen->ipv6port = sc->bind_port;
+            srv->vs_screen->newClientHook = vncserver_newclient;
+        } else
+            errx(EX_DATAERR, "there is no data to initialize the server");
 
         if (sc->kbd_handler && sc->ptr_handler) {
             srv->vs_screen->kbdAddEvent = (void *)sc->kbd_handler;
