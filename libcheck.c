@@ -47,7 +47,7 @@ check_supportedlibs(char *lib_name) {
             strncmp(lib_name, LIBVNCSERVER, sizeof(LIBVNCSERVER)) == 0)
         return 0;
     else
-        err(EX_IOERR, "%s this is a non supported lib.", lib_name);
+        errx(EX_IOERR, "%s this is a non supported lib.", lib_name);
 }
 
 /*
@@ -64,7 +64,7 @@ check_sharedlibs(char *lib_name) {
     if (check_supportedlibs(lib_name) == 0) {
         loader = strdup(lib_name);
         if (loader == NULL)
-            err(EX_OSERR, "malloc error");
+            errx(ENOMEM, "malloc error");
 
         shlib = dlopen(loader, RTLD_LAZY);
         if (!shlib) {
