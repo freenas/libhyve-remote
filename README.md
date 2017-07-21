@@ -13,9 +13,15 @@ The intend of this library is to be agnostic of protocol implementation and act 
 ### How do I get set up? ###
 
 * cmake ./CMakeLists.txt 
-* make
+* make ; make install
 
-It will create 3 different files:
-1) test_it that basically is a POC to test the shared library itself.
-2) main is test purpose binary that does nothing. :)
-3) libhyverem that implements the abstraction layer between other libraries.
+It will create and install libhyverem.so at /usr/local/lib/
+
+### How do I use libhyverem? ###
+* cd examples
+
+### What libhyverem provides now? ###
+Basically 3 main functions:
+* vnc_enable_http(): That enables libvncserver to run via HTTP.
+* vnc_init_server(): That prepares the vnc server to be started.
+* vnc_event_loop(): Runs the vnc server.
