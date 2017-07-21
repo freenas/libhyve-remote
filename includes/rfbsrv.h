@@ -28,6 +28,7 @@
  *
  */
 
+#include <stdbool.h>
 #include <rfb/rfb.h>
 
 #ifndef HANDLER_H
@@ -38,5 +39,13 @@ struct vncserver_handler {
     int             vs_height;
     int             vs_conn_wait;
     int             vs_sending;
+};
+#endif
+
+#ifndef HTTP_H
+#define HTTP_H
+struct vnc_http_proxy {
+    char            *webdir;
+    bool            enable;
 };
 #endif

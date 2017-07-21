@@ -37,17 +37,17 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include "vncserver.h"
 #include "libcheck.h"
-#include "rfbsrv.h"
-#include "hyverem.h"
 
 #define DPRINTF(params) if (hyverem_debug) printf params
 #define WPRINTF(params) printf params
 
-static int hyverem_debug = 1;
+static int hyverem_debug = 0;
 static char *keys[0x400];
-struct vncserver_handler *srv;
+struct vncserver_handler *srv = NULL;
+struct vnc_http_proxy *hp = NULL;
 
 static int load_functions(void);
 static enum rfbNewClientAction vncserver_newclient(rfbClientPtr cl);
@@ -99,6 +99,27 @@ doptr_fallback(int button, int x, int y) {
         WPRINTF(("[hyverem]: mouse button mask 0x%x at %d, %d", button,
                   x, y));
     }
+}
+
+/*
+ * Enable HTTP proxy server.
+ */
+int
+vnc_enable_http(char *webdir, bool enable) {
+    struct stat sb;
+
+    hp = malloc(sizeof(struct vnc_http_proxy));
+    if (!hp)
+        errx(EX_OSERR, "error to allocate memory for http");
+
+    if (stat(webdir, &sb) == 0 && S_ISDIR(sb.st_mode)) {
+        hp->webdir = webdir;
+        hp->enable = enable;
+    } else
+        err(EX_UNAVAILABLE, "webdir: %s does not exist", webdir);
+
+    DPRINTF(("WEB: %s ENB: %d\n", hp->webdir, hp->enable));
+    return (0);
 }
 
 /*
@@ -175,7 +196,6 @@ vnc_init_server(struct server_softc *sc) {
         if (!srv->vs_screen) {
             free(srv);
             errx(EX_OSERR, "error to allocate memory for vs_screen");
-            return (1);
         }
 
         if (sc) {
@@ -204,6 +224,10 @@ vnc_init_server(struct server_softc *sc) {
         }
 
         DPRINTF(("Bind port: %d for guest: %s\n", sc->bind_port, sc->desktopName));
+        if (hp) {
+            srv->vs_screen->httpDir = hp->webdir;
+            srv->vs_screen->httpEnableProxyConnect = hp->enable;
+        }
 
         start_vnc_server(srv->vs_screen);
 
