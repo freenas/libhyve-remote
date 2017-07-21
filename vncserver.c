@@ -102,6 +102,18 @@ doptr_fallback(int button, int x, int y) {
 }
 
 /*
+ * Update the client screen with new information.
+ */
+int
+vnc_mark_rect_modified(struct server_softc *sc, int x1, int y1, int x2, int y2) {
+
+    mark_rect_asmodified(srv->vs_screen, 0, 0, sc->vs_width, sc->vs_height);
+    DPRINTF(("x1: %d\t y1: %d\t x2: %d\t y2: %d\n", x1, y1, x2, y2));
+
+    return (0);
+}
+
+/*
  * Load from LIBVNCSERVER shared library the functions that are necessary
  * to provide a minimum functionality for this library.
  */
@@ -198,16 +210,4 @@ vnc_init_server(struct server_softc *sc) {
         return (0);
     }
     return (1);
-}
-
-/*
- * Update the client screen with new information.
- */
-int
-vnc_mark_rect_modified(struct server_softc *sc, int x1, int y1, int x2, int y2) {
-
-    mark_rect_asmodified(srv->vs_screen, 0, 0, sc->vs_width, sc->vs_height);
-    DPRINTF(("x1: %d\t y1: %d\t x2: %d\t y2: %d\n", x1, y1, x2, y2));
-
-    return (0);
 }
