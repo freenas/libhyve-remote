@@ -33,6 +33,16 @@
 #include <stdbool.h>
 #include "rfbsrv.h"
 
+#ifndef GC_H
+#define GC_H
+struct gc_image {
+    int     vgamode;
+    int     width;
+    int     height;
+    uint32_t    *data;
+};
+#endif
+
 #ifndef SOFTC_H
 #define SOFTC_H
 struct server_softc {

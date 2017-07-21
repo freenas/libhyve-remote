@@ -30,16 +30,6 @@
 
 #include <rfb/rfb.h>
 
-#ifndef GC_H
-#define GC_H
-struct gc_image {
-    int     vgamode;
-    int     width;
-    int     height;
-    uint32_t    *data;
-};
-#endif
-
 #ifndef HANDLER_H
 #define HANDLER_H
 struct vncserver_handler {
