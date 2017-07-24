@@ -199,6 +199,7 @@ void vnc_event_loop(int time, bool bol) {
 int
 vnc_init_server(struct server_softc *sc) {
     static const char *passwordList[0];
+    passwordList[0] = NULL;
 
     if (load_functions() == 0) {
         srv = malloc(sizeof(struct vncserver_handler));
@@ -239,12 +240,12 @@ vnc_init_server(struct server_softc *sc) {
             srv->vs_screen->passwordCheck = (void *)vnc_password_check;
         }
 
-        DPRINTF(("Bind port: %d for guest: %s\n", sc->bind_port, sc->desktopName));
         if (hp) {
             srv->vs_screen->httpDir = hp->webdir;
             srv->vs_screen->httpEnableProxyConnect = hp->enable;
         }
 
+        DPRINTF(("Bind port: %d for guest: %s\n", sc->bind_port, sc->desktopName));
         start_vnc_server(srv->vs_screen);
 
         return (0);
