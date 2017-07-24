@@ -44,7 +44,7 @@
 #define DPRINTF(params) if (hyverem_debug) printf params
 #define WPRINTF(params) printf params
 
-static int hyverem_debug = 0;
+static int hyverem_debug = 1;
 static char *keys[0x400];
 struct vncserver_handler *srv = NULL;
 struct vnc_http_proxy *hp = NULL;
@@ -63,6 +63,7 @@ void (*run_event_loop)(rfbScreenInfoPtr screeninfo, long usec,
     rfbBool runInBackground);
 void (*mark_rect_asmodified)(rfbScreenInfoPtr rfbScreen, int x1, int y1,
     int x2, int y2);
+void (*vnc_password_check)(rfbClientPtr cl, const char *response, int len);
 
 /*
  * Just output the IP of the client connected in this server and return accept.
@@ -157,6 +158,7 @@ load_functions(void) {
         start_vnc_server = dlsym(shlib, "rfbInitServerWithPthreadsAndZRLE");
         run_event_loop = dlsym(shlib, "rfbRunEventLoop");
         mark_rect_asmodified = dlsym(shlib, "rfbMarkRectAsModified");
+        vnc_password_check = dlsym(shlib, "rfbCheckPasswordByList");
 
         if(!start_vnc_server) {
             WPRINTF(("[hyverem]: Failed to load rfbInitServerWithPthreadsAndZRLE\n"));
@@ -166,6 +168,9 @@ load_functions(void) {
             goto free_lib;
         } else if (!mark_rect_asmodified) {
             WPRINTF(("[hyverem]: Failed to load rfbMarkRectAsModified\n"));
+            goto free_lib;
+        } else if (!vnc_password_check) {
+            WPRINTF(("[hyverem]: Failed to load rfbCheckPasswordByList\n"));
             goto free_lib;
         }
         return (0);
@@ -190,6 +195,8 @@ void vnc_event_loop(int time, bool bol) {
  */
 int
 vnc_init_server(struct server_softc *sc) {
+    static const char *passwordList[0];
+
     if (load_functions() == 0) {
         srv = malloc(sizeof(struct vncserver_handler));
         srv->vs_screen = (struct _rfbScreenInfo *)malloc(sizeof(rfbScreenInfoPtr));
@@ -221,6 +228,12 @@ vnc_init_server(struct server_softc *sc) {
             WPRINTF(("[hyverem]: Keyboard and mouse functions not provided.\n"));
             srv->vs_screen->kbdAddEvent = (void *)dokey_fallback;
             srv->vs_screen->ptrAddEvent = (void *)doptr_fallback;
+        }
+
+        if (sc->password) {
+            passwordList[0] = sc->password;
+            srv->vs_screen->authPasswdData = (void *)passwordList;
+            srv->vs_screen->passwordCheck = (void *)vnc_password_check;
         }
 
         DPRINTF(("Bind port: %d for guest: %s\n", sc->bind_port, sc->desktopName));

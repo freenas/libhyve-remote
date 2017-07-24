@@ -60,6 +60,7 @@ struct server_softc {
     int             vs_crc_width;
     int             vs_crc_height;
     char            *desktopName;
+    char            *password;
     bool            alwaysShared;
     int             redShift;
     int             greenShift;
