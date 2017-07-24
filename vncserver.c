@@ -182,6 +182,9 @@ free_lib:
     return (1);
 }
 
+/*
+ * Launch VNC server with a loop.
+ */
 void vnc_event_loop(int time, bool bol) {
         DPRINTF(("start vnc_event_loop\n"));
         if (srv->vs_screen)
@@ -191,7 +194,7 @@ void vnc_event_loop(int time, bool bol) {
 }
 
 /*
- * Start the VNC SERVER with data received from server_softc structure.
+ * Initialize the VNC SERVER with data received from server_softc structure.
  */
 int
 vnc_init_server(struct server_softc *sc) {
