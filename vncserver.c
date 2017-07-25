@@ -44,7 +44,7 @@
 #define DPRINTF(params) if (hyverem_debug) printf params
 #define WPRINTF(params) printf params
 
-static int hyverem_debug = 1;
+static int hyverem_debug = 0;
 static char *keys[0x400];
 struct vncserver_handler *srv = NULL;
 struct vnc_http_proxy *hp = NULL;
