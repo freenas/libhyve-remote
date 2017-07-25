@@ -1,3 +1,8 @@
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/araujobsd/libhyve-remote.svg)](http://isitmaintained.com/project/araujobsd/libhyve-remote "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/araujobsd/libhyve-remote.svg)](http://isitmaintained.com/project/araujobsd/libhyve-remote "Percentage of issues still open")
+[![GitHub forks](https://img.shields.io/github/forks/araujobsd/libhyve-remote.svg)](https://github.com/araujobsd/libhyve-remote/network)
+
+
 # libhyve-remote
 
 The libhyve-remote aims to abstract functionalities from other third party libraries such like libvncserver, freerdp and spice. With a basic data structure it is easy to implement any remote desktop protocol without dig into the protocol specification or third part libraries, you can check some of our examples.
