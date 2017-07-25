@@ -27,4 +27,4 @@ vncserver_password: vncserver_password.c
 distclean: clean
 	-rm -f libhyverem.so
 
-.include <bsd.lib.mk>
+.include <bsd.prog.mk>
