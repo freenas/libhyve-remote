@@ -1,14 +1,2 @@
-matrix:
-    include:
-        - os: linux
-          addons:
-              apt:
-                  sources:
-                      - llvm-toolchain-trusty-4.0
-                  package:
-                      - clang-4.0
-              env:
-                  - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
-
-before_install:
-    - eval "${MATRIX_EVAL}"
+language: C
+script: make
