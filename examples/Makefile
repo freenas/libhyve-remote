@@ -2,6 +2,7 @@ PACKAGE=        examples
 WARNS?=		2
 LIBADD+=	${.CURDIR}/../libhyverem.so.1
 CFLAGS+=	-I${.CURDIR}/../includes -L${.CURDIR}/../ -lhyverem
+MAN=
 
 .if defined(HAVE_DEBUG)
 CFLAGS+=	-g

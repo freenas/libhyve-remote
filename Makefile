@@ -5,6 +5,8 @@ SHLIB_MINOR=	0
 WARNS?=		2
 CFLAGS+=	-I${.CURDIR}/includes
 SRCS=		libcheck.c vncserver.c
+PREFIX?=	/usr/local
+LIBDIR=		${PREFIX}/lib
 
 .if defined(HAVE_DEBUG)
 CFLAGS+=	-g
