@@ -31,3 +31,6 @@ Basically 3 main functions:
 * vnc_enable_http(): That enables libvncserver to run via HTTP.
 * vnc_init_server(): That prepares the vnc server to be started.
 * vnc_event_loop(): Runs the vnc server.
+
+### Imortant note. ### 
+The libhyve-remote is a new project still under development, it is still in process of polishment and under constrution.
