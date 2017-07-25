@@ -17,7 +17,7 @@ It will create and install libhyve-remote in `/usr/lib/`
 
 ### How do I use libhyve-remote?
 
-  cd examples
+    cd examples
 
 ### What libhyve-remote provides now?
 
