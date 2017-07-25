@@ -4,7 +4,7 @@ The libhyve-remote aims to abstract functionalities from other third party libra
 
 We don't static link any third party library, instead we use dynamic linker and we load only functionalities that we believe is necessary to launch the service.
 
-Our target is to abstract functionalities from libvncserver, freerdp and spice. Right now libhyve-remote supports libvncserver, it is possible to launch a vnc server with different screen resolution as well as with authentication.
+Our target is to abstract functionalities from libvncserver, freerdp and spice. Right now libhyve-remote only supports libvncserver. It is possible to launch a vnc server with different screen resolution as well as with authentication.
 
 Also, due some software license restrictions, this library is implemented using dual license GPL version 2 and BSD 2-Clauses license.
 
