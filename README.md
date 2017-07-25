@@ -5,7 +5,7 @@
 
 # libhyve-remote <img src="https://raw.githubusercontent.com/araujobsd/hbhyve/master/logo/hbhyve.jpg" alt="libhyve-remote" height="82" width="82" align="right">
 
-The libhyve-remote aims to abstract functionalities from other third party libraries such like libvncserver, freerdp and spice. With a basic data structure it is easy to implement any remote desktop protocol without dig into the protocol specification or third part libraries, you can check some of our examples.
+The libhyve-remote aims to abstract functionalities from other third party libraries such like libvncserver, freerdp and spice to be used in hypervisor implementation. With a basic data structure it is easy to implement any remote desktop protocol without dig into the protocol specification or third part libraries, you can check some of our examples.
 
 We don't static link any third party library, instead we use dynamic linker and we load only functionalities that we believe is necessary to launch the service.
 
