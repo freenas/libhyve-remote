@@ -18,7 +18,7 @@ Also, due some software license restrictions, this library is implemented using 
     make
     make install 
 
-It will create and install `libhyverem.so` in `/usr/lib/`
+It will create and install `libhyverem.so` in `/usr/local/lib/`
 
 ### How do I use libhyve-remote?
 
