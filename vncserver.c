@@ -49,11 +49,6 @@ static char *keys[0x400];
 struct vncserver_handler *srv = NULL;
 struct vnc_http_proxy *hp = NULL;
 
-static int load_functions(void);
-static enum rfbNewClientAction vncserver_newclient(rfbClientPtr cl);
-static void dokey_fallback(rfbBool down, rfbKeySym key);
-static void doptr_fallback(int button, int x, int y);
-
 /* Shared functions from libvncserver. */
 rfbScreenInfoPtr (*get_screen)(int *argc, char **argv,
     int width, int height, int bitsPerSample, int samplesPerPixel,

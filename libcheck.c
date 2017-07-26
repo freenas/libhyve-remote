@@ -36,8 +36,6 @@
 #include "rfbsrv.h"
 #include "libcheck.h"
 
-static int check_supportedlibs(char *lib_name);
-
 /*
  * Check if the library is one of those supported.
  */
