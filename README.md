@@ -26,11 +26,12 @@ It will create and install `libhyverem.so` in `/usr/local/lib/`
 
 ### What libhyve-remote provides now?
 
-Basically 3 main functions:
+Basically 4 main functions:
 #### libvncserver ####
 * vnc_enable_http(): That enables libvncserver to run via HTTP.
 * vnc_init_server(): That prepares the vnc server to be started.
 * vnc_event_loop(): Runs the vnc server.
+* vnc_mark_rect_modified(): Tells to vncserver there is a modification on the screen.
 
 ### Imortant note. ### 
 The libhyve-remote is a new project still under development, it is still in process of polishment and under constrution.
