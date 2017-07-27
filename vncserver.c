@@ -48,7 +48,6 @@ static int hyverem_debug = 0;
 static char *keys[0x400];
 struct vncserver_handler *srv = NULL;
 struct vnc_http_proxy *hp = NULL;
-static int wait = 0; // Waiting for client.
 
 /* Shared functions from libvncserver. */
 rfbScreenInfoPtr (*get_screen)(int *argc, char **argv,
@@ -240,9 +239,6 @@ vnc_init_server(struct server_softc *sc) {
             srv->vs_screen->httpDir = hp->webdir;
             srv->vs_screen->httpEnableProxyConnect = hp->enable;
         }
-
-        if (sc->vs_cond)
-            wait = sc->vs_cond;
 
         DPRINTF(("Bind port: %d for guest: %s\n", sc->bind_port, sc->desktopName));
         start_vnc_server(srv->vs_screen);
