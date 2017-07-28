@@ -66,7 +66,7 @@ check_sharedlibs(char *lib_name) {
 
         shlib = dlopen(loader, RTLD_LAZY);
         if (!shlib) {
-            dlclose(shlib);
+            dlclose(loader);
             free(loader);
             return (1);
         } else
