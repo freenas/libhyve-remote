@@ -48,6 +48,9 @@ static int hyverem_debug = 0;
 static char *keys[0x400];
 struct vncserver_handler *srv = NULL;
 struct vnc_http_proxy *hp = NULL;
+static int wait = 0;
+pthread_cond_t wait_cond = NULL;
+static char *vnc_password = NULL;
 
 /* Shared functions from libvncserver. */
 rfbScreenInfoPtr (*get_screen)(int *argc, char **argv,
@@ -73,6 +76,9 @@ vncserver_newclient(rfbClientPtr cl) {
     ipv4 = ntohl(addr.sin_addr.s_addr);
     DPRINTF(("Client connected from ip %d.%d.%d.%d\n",
             (ipv4>>24)&0xff, (ipv4>>16)&0xff, (ipv4>>8)&0xff, ipv4&0xff));
+
+    if (wait_cond)
+        pthread_cond_signal(&wait_cond);
 
     return (RFB_CLIENT_ACCEPT);
 }
@@ -128,6 +134,15 @@ vnc_mark_rect_modified(struct server_softc *sc, int x1, int y1, int x2, int y2) 
     DPRINTF(("x1: %d\t y1: %d\t x2: %d\t y2: %d\n", x1, y1, x2, y2));
 
     return (0);
+}
+
+int
+vnc_enable_password(char *password) {
+    if (password) {
+        vnc_password = password;
+        return 0;
+    } else
+        return 1;
 }
 
 /*
@@ -229,8 +244,8 @@ vnc_init_server(struct server_softc *sc) {
             srv->vs_screen->ptrAddEvent = (void *)doptr_fallback;
         }
 
-        if (sc->password) {
-            passwordList[0] = sc->password;
+        if (vnc_password) {
+            passwordList[0] = vnc_password;
             srv->vs_screen->authPasswdData = (void *)passwordList;
             srv->vs_screen->passwordCheck = (void *)vnc_password_check;
         }
@@ -238,6 +253,11 @@ vnc_init_server(struct server_softc *sc) {
         if (hp) {
             srv->vs_screen->httpDir = hp->webdir;
             srv->vs_screen->httpEnableProxyConnect = hp->enable;
+        }
+
+        if (sc->vs_conn_wait == 1) {
+            wait = sc->vs_conn_wait;
+            wait_cond = sc->vs_cond;
         }
 
         DPRINTF(("Bind port: %d for guest: %s\n", sc->bind_port, sc->desktopName));
