@@ -10,12 +10,14 @@ int main(void);
 int
 main(void) {
     struct server_softc *sc = NULL;
+    static char *password = NULL;
 
     sc = malloc(sizeof(struct server_softc));
     sc->bind_port = 5959;
     sc->desktopName = "Test_Password";
-    sc->password = "secret";
+    password = "secret";
 
+    vnc_enable_password(password);
     vnc_init_server(sc);
     vnc_event_loop(-1, FALSE);
 
