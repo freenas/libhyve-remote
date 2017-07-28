@@ -48,7 +48,7 @@ static int hyverem_debug = 0;
 static char *keys[0x400];
 struct vncserver_handler *srv = NULL;
 struct vnc_http_proxy *hp = NULL;
-static int wait = 0;
+static int wait = 0; // Wait for client to connect
 pthread_cond_t wait_cond = NULL;
 static char *vnc_password = NULL;
 
