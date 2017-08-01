@@ -1,6 +1,9 @@
 /*
  * Copyright (c) 2017 by Marcelo Araujo <araujo@FreeBSD.org>
  * All rights reserved.
+ * 
+ * This software was developed by Marcelo Araujo under contract to
+ * iXsystems, Inc.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
