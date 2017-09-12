@@ -20,4 +20,8 @@ examples:
 CFLAGS+=	-L${.CURDIR} -lhyverem
 SUBDIR=		examples
 
+bhyve-patch:
+	cp patches/bhyve_vncserver.patch /usr/src/usr.sbin/bhyve/
+	cd /usr/src/usr.sbin/bhyve/ ;  patch < bhyve_vncserver.patch ; make clean; make; make install
+
 .include <bsd.lib.mk>
