@@ -12,7 +12,7 @@ CFLAGS+=	-DHAVE_DEBUG
 clean:
 	rm -f simple_output simple_output_http vncserver_password
 
-all: simple_output simple_output_http \
+all_examples: simple_output simple_output_http \
 	vncserver_password
 
 simple_output: simple_output.c
