@@ -1,7 +1,7 @@
 PACKAGE=        examples
 WARNS?=		2
 LIBADD+=	${.CURDIR}/../libhyverem.so.1
-CFLAGS+=	-I${.CURDIR}/../include -L${.CURDIR}/../ -lhyverem
+CFLAGS+=	-I${.CURDIR}/../include -L${.CURDIR}/../ -I/usr/local/include -lhyverem
 MAN=
 
 .if defined(HAVE_DEBUG)
@@ -12,7 +12,7 @@ CFLAGS+=	-DHAVE_DEBUG
 clean:
 	rm -f simple_output simple_output_http vncserver_password
 
-all: simple_output simple_output_http \
+all_examples: simple_output simple_output_http \
 	vncserver_password
 
 simple_output: simple_output.c

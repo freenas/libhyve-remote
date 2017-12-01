@@ -229,6 +229,12 @@ vnc_init_server(struct server_softc *sc) {
             srv->vs_screen->frameBuffer = sc->frameBuffer;
             srv->vs_screen->screenData = sc;
             srv->vs_screen->port = sc->bind_port;
+
+            if (sc->hostname && strlen(sc->hostname) > 0)
+                srv->vs_screen->listenInterface = inet_addr(sc->hostname);
+            else
+                srv->vs_screen->listenInterface = htonl(INADDR_LOOPBACK);
+
             srv->vs_screen->ipv6port = sc->bind_port;
             srv->vs_screen->newClientHook = vncserver_newclient;
         } else

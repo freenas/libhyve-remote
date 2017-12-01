@@ -69,6 +69,8 @@ struct server_softc {
     int             samplesPerPixel;
     int             bytesPerPixel;
     int             bind_port;
+    char            *hostname;
+    in_addr_t       listenInterface;
     void            (*kbd_handler)(int down, uint32_t keysym);
     void            (*ptr_handler)(uint8_t button, int x, int y);
 };
