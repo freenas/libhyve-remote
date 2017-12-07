@@ -39,7 +39,7 @@ main(void) {
     sc->ptr_handler = mouse;
     sc->kbd_handler = keyboard;
 
-    vnc_init_server(sc);
+    vnc_init_server(sc, NULL);
     vnc_event_loop(-1, FALSE);
 
     return (0);

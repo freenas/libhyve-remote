@@ -206,7 +206,7 @@ void vnc_event_loop(int time, bool bol) {
  * Initialize the VNC SERVER with data received from server_softc structure.
  */
 int
-vnc_init_server(struct server_softc *sc) {
+vnc_init_server(struct server_softc *sc, char *hostname) {
     static const char *passwordList[0];
     passwordList[0] = NULL;
 
@@ -230,8 +230,8 @@ vnc_init_server(struct server_softc *sc) {
             srv->vs_screen->screenData = sc;
             srv->vs_screen->port = sc->bind_port;
 
-            if (sc->hostname && strlen(sc->hostname) > 0)
-                srv->vs_screen->listenInterface = inet_addr(sc->hostname);
+            if (hostname && strlen(hostname) > 0)
+                srv->vs_screen->listenInterface = inet_addr(hostname);
             else
                 srv->vs_screen->listenInterface = htonl(INADDR_LOOPBACK);
 
@@ -264,9 +264,10 @@ vnc_init_server(struct server_softc *sc) {
             wait_cond = sc->vs_cond;
         }
 
-        DPRINTF(("Bind port: %d for guest: %s\n", sc->bind_port, sc->desktopName));
+        DPRINTF(("Bind port: %d for guest: %s on ip address: %s\n", sc->bind_port, sc->desktopName, hostname));
         start_vnc_server(srv->vs_screen);
 
+	free(sc);
         return (0);
     }
     return (1);

@@ -40,7 +40,7 @@ main(void) {
     sc->kbd_handler = keyboard;
 
     vnc_enable_http("/tmp/webclients/", true);
-    vnc_init_server(sc);
+    vnc_init_server(sc, NULL);
     vnc_event_loop(-1, FALSE);
 
     return (0);

@@ -18,7 +18,7 @@ main(void) {
     password = "secret";
 
     vnc_enable_password(password);
-    vnc_init_server(sc);
+    vnc_init_server(sc, NULL);
     vnc_event_loop(-1, FALSE);
 
     return (0);

@@ -31,7 +31,7 @@
 #include "rfbsrv.h"
 #include "hyverem.h"
 
-extern int vnc_init_server(struct server_softc *sc);
+extern int vnc_init_server(struct server_softc *sc, char *hostname);
 extern int vnc_mark_rect_modified(struct server_softc *sc, int x1, int y1, int x2, int y2);
 extern void vnc_event_loop(int time, bool b);
 extern int vnc_enable_http(char *webdir, bool enable);
