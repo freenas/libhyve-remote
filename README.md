@@ -1,6 +1,6 @@
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/araujobsd/libhyve-remote.svg)](http://isitmaintained.com/project/araujobsd/libhyve-remote "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/araujobsd/libhyve-remote.svg)](http://isitmaintained.com/project/araujobsd/libhyve-remote "Percentage of issues still open")
-[![GitHub forks](https://img.shields.io/github/forks/araujobsd/libhyve-remote.svg)](https://github.com/araujobsd/libhyve-remote/network)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/freenas/libhyve-remote.svg)](http://isitmaintained.com/project/freenas/libhyve-remote "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/freenas/libhyve-remote.svg)](http://isitmaintained.com/project/freenas/libhyve-remote "Percentage of issues still open")
+[![GitHub forks](https://img.shields.io/github/forks/freenas/libhyve-remote.svg)](https://github.com/freenas/libhyve-remote/network)
 
 
 # libhyve-remote <img src="https://raw.githubusercontent.com/araujobsd/hbhyve/master/logo/hbhyve.jpg" alt="libhyve-remote" height="82" width="82" align="right">
