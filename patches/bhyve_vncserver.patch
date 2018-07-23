@@ -1,6 +1,6 @@
 Index: Makefile
 ===================================================================
---- Makefile	(revision 323795)
+--- Makefile	(revision 335563)
 +++ Makefile	(working copy)
 @@ -57,6 +57,7 @@
  	usb_mouse.c		\
@@ -12,7 +12,7 @@ Index: Makefile
  
 Index: bhyve.8
 ===================================================================
---- bhyve.8	(revision 323795)
+--- bhyve.8	(revision 335563)
 +++ bhyve.8	(working copy)
 @@ -24,7 +24,7 @@
  .\"
@@ -44,7 +44,7 @@ Index: bhyve.8
    -l bootrom,/usr/local/share/uefi-firmware/BHYVE_UEFI.fd \\
 Index: pci_fbuf.c
 ===================================================================
---- pci_fbuf.c	(revision 323795)
+--- pci_fbuf.c	(revision 335563)
 +++ pci_fbuf.c	(working copy)
 @@ -1,4 +1,5 @@
  /*-
@@ -214,7 +214,7 @@ Index: pci_fbuf.c
  		free(sc);
 Index: rfb.h
 ===================================================================
---- rfb.h	(revision 323795)
+--- rfb.h	(revision 335563)
 +++ rfb.h	(working copy)
 @@ -32,5 +32,6 @@
  #define	RFB_PORT	5900
@@ -227,7 +227,7 @@ Index: vncserver.c
 ===================================================================
 --- vncserver.c	(nonexistent)
 +++ vncserver.c	(working copy)
-@@ -0,0 +1,456 @@
+@@ -0,0 +1,455 @@
 +/*-
 + * Copyright (c) 2017 Marcelo Araujo <araujo@FreeBSD.org>
 + * Copyright (c) 2016 Jakub Klama <jakub@ixsystems.com>
@@ -681,7 +681,6 @@ Index: vncserver.c
 +		pthread_mutex_unlock(&sc->vs_mtx);
 +	}
 +
-+	free(sc);
 +	return (0);
 +}
 
